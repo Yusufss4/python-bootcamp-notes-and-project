@@ -1,3 +1,8 @@
+import pandas as pd
+import numpy as np
+from datetime import date
+
+
 class Lesson:
     course_id = 101
 
@@ -73,7 +78,7 @@ class Lesson:
                         students_point = student.lessons_registered[index][1]
                         course_found = 1
                         if students_point is None:
-                            grade = "GZ" ,
+                            grade = "GZ"
                             # If the calculate is called and students mark is None it means that person
                             # doesnt entered the exam.
                         elif students_point > Lesson.CalculationGrades.AA:
@@ -106,13 +111,36 @@ class Lesson:
                     print(f"The lesson is not assigned to the student with ID of {student.student_id}")
 
     def export_excel_file(self):
-        pass
+        # columns = ['Student ID', 'Student Name', 'Student Grade', 'Passed or Not']
+        data = pd.DataFrame(dtype="str")
+        for student in self.students:
+            index = 0
+            for course_info in student.lessons_registered:
+                if course_info[0] == self.course_id:
+                    if student.lessons_registered[index][2] == "FF":
+                        is_passed = "Passed"
+                    else:
+                        is_passed = "Failed"
 
+                    student_row = [[str(student.student_id),
+                                   student.name + " " +
+                                   student.surname,
+                                   str(student.lessons_registered[index][1]),
+                                   str(student.lessons_registered[index][2]),
+                                   is_passed]]
+                    data_students = pd.DataFrame(student_row, columns = ['Student ID', 'Student Name', 'Student Grade', 'Student Point', 'Status'])
+                    data = pd.concat([data, data_students])
+                index += 1
+        data.reset_index(inplace=True, drop=True)
+        print(data)
 
-
-
-
-
+        todays_date = date.today().strftime("%d-%m-%Y")
+        excel_file_name = f"{self.name}{str(self.course_id)}-{str(len(self.students))}-{todays_date}.xlsx"
+        print(excel_file_name)
+        try:
+            data.to_excel(excel_file_name)
+        except:
+            print("Could not import to the excel file.")
 
 
 class Student:
@@ -139,7 +167,8 @@ class Student:
             f"{self.name} {self.surname} - Student ID: {self.student_id} Reg Lessons: {self.number_of_lessons_registered}")
         if with_lessons:
             for i in range(self.number_of_lessons_registered):
-                print(f"Lesson ID: {self.lessons_registered[i][0]} Point: {self.lessons_registered[i][1]} Grade: {self.lessons_registered[i][2]}")
+                print(
+                    f"Lesson ID: {self.lessons_registered[i][0]} Point: {self.lessons_registered[i][1]} Grade: {self.lessons_registered[i][2]}")
 
     def register_lesson_to_student(self, course_id):
         self.lessons_registered.append([course_id, None, None])
@@ -150,7 +179,7 @@ if __name__ == '__main__':
     s1 = Student("Yusuf", "Savas")
     s2 = Student("Mehmet", "Yılmaz")
     s3 = Student("Ayşe", "Demir")
-    s4 = Student("John", "Rave",101)
+    s4 = Student("John", "Rave", 101)
 
     course1 = Lesson("Math", 1, 30)
     course1.add_student_to_lesson(s1)
@@ -168,6 +197,8 @@ if __name__ == '__main__':
     course1.calculate_grade("manual")
 
     course1.describe()
-    course2.describe()
+    # course2.describe()
+
+    course1.export_excel_file()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
