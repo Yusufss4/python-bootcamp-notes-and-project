@@ -73,6 +73,7 @@ class Lesson:
         elif calculation_type == "manual":
             for student in self.students:
                 index = 0
+                course_found = 0
                 for course_info in student.lessons_registered:
                     if course_info[0] == self.course_id:
                         students_point = student.lessons_registered[index][1]
@@ -80,7 +81,7 @@ class Lesson:
                         if students_point is None:
                             grade = "GZ"
                             # If the calculate is called and students mark is None it means that person
-                            # doesnt entered the exam.
+                            # doesn't enter the exam.
                         elif students_point > Lesson.CalculationGrades.AA:
                             grade = "AA"
                         elif students_point > Lesson.CalculationGrades.BA:
@@ -103,6 +104,8 @@ class Lesson:
                             grade = "FF"
                         elif students_point == Lesson.CalculationGrades.GR:
                             grade = "GR"
+                        else:
+                            grade = None
 
                         student.lessons_registered[index][2] = grade
                         index += 1
@@ -112,7 +115,7 @@ class Lesson:
 
     def export_excel_file(self):
         # columns = ['Student ID', 'Student Name', 'Student Grade', 'Passed or Not']
-        data = pd.DataFrame(dtype="str")
+        data = pd.DataFrame()
         for student in self.students:
             index = 0
             for course_info in student.lessons_registered:
@@ -122,13 +125,14 @@ class Lesson:
                     else:
                         is_passed = "Failed"
 
-                    student_row = [[str(student.student_id),
-                                   student.name + " " +
-                                   student.surname,
-                                   str(student.lessons_registered[index][1]),
-                                   str(student.lessons_registered[index][2]),
-                                   is_passed]]
-                    data_students = pd.DataFrame(student_row, columns = ['Student ID', 'Student Name', 'Student Grade', 'Student Point', 'Status'])
+                    student_row = [[student.student_id,
+                                    student.name + " " +
+                                    student.surname,
+                                    student.lessons_registered[index][1],
+                                    student.lessons_registered[index][2],
+                                    is_passed]]
+                    data_students = pd.DataFrame(student_row, columns=['Student ID', 'Student Name', 'Student Grade',
+                                                                       'Student Point', 'Status'])
                     data = pd.concat([data, data_students])
                 index += 1
         data.reset_index(inplace=True, drop=True)
