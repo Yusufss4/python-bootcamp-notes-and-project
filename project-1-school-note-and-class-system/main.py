@@ -1,9 +1,16 @@
 class Lesson:
+    course_id = 101
+
     def __init__(self, name, course_id, max_students):
         self.name = name
         self.course_id = course_id
         self.max_students = max_students
         self.students = []  # Empty lists for the students.
+        Lesson.increase_course_id()
+
+    @classmethod
+    def increase_course_id(cls):
+        cls.course_id = cls.course_id + 1
 
     def add_student_to_lesson(self, student):
         if len(self.students) < self.max_students:
@@ -32,59 +39,118 @@ class Lesson:
         print(f"Max Students: {self.max_students}")
         print(f"Students are assigned:")
         for i in range(len(self.students)):
-            (self.students[i]).describe()
+            (self.students[i]).describe(True)
 
+    class CalculationGrades:
+        AA = 90
+        BA = 80
+        BB = 70
+        CB = 65
+        CC = 60
+        DC = 55
+        DD = 50
+        FD = 40
+        FF = 35
+        GR = "GR"
 
-    def calculate_grade(self, calculation_type="catalog"):  # return a dataframe that consist of IDs and Passed/Non-Passed
+        @classmethod  # Class methods are specific to classes.
+        def change_calculation_grades_manually(cls):
+            pass
+
+        @classmethod  # Class methods are specific to classes.
+        def return_current_grades(cls):
+            pass
+
+    def calculate_grade(self,
+                        calculation_type="catalog"):  # return a dataframe that consist of IDs and Passed/Non-Passed
+        if calculation_type == "catalog":
+            pass
+        elif calculation_type == "manual":
+            for student in self.students:
+                index = 0
+                for course_info in student.lessons_registered:
+                    if course_info[0] == self.course_id:
+                        students_point = student.lessons_registered[index][1]
+                        course_found = 1
+                        if students_point is None:
+                            grade = "GZ" ,
+                            # If the calculate is called and students mark is None it means that person
+                            # doesnt entered the exam.
+                        elif students_point > Lesson.CalculationGrades.AA:
+                            grade = "AA"
+                        elif students_point > Lesson.CalculationGrades.BA:
+                            grade = "BA"
+                        elif students_point > Lesson.CalculationGrades.BB:
+                            grade = "BB"
+                        elif students_point > Lesson.CalculationGrades.CB:
+                            grade = "CB"
+                        elif students_point > Lesson.CalculationGrades.CC:
+                            grade = "CC"
+                        elif students_point > Lesson.CalculationGrades.DC:
+                            grade = "DC"
+                        elif students_point > Lesson.CalculationGrades.DD:
+                            grade = "DD"
+                        elif students_point > Lesson.CalculationGrades.FD:
+                            grade = "FD"
+                        elif students_point > Lesson.CalculationGrades.FF:
+                            grade = "FF"
+                        elif students_point >= 0:
+                            grade = "FF"
+                        elif students_point == Lesson.CalculationGrades.GR:
+                            grade = "GR"
+
+                        student.lessons_registered[index][2] = grade
+                        index += 1
+
+                if course_found == 0:
+                    print(f"The lesson is not assigned to the student with ID of {student.student_id}")
+
+    def export_excel_file(self):
         pass
 
 
-class CalculationGrades:
-    AA = 90
-    BA = 80
-    BB = 70
-    CB = 65
-    CC = 60
-    DC = 55
-    DD = 50
-    FD = 40
-    FF = 35
-    GR = "GR"
 
-    @classmethod  # Class methods are spesific to classes.
-    def change_calculation_grades(cls):
-        pass
 
-    @classmethod  # Class methods are spesific to classes.
-    def return_current_grades(cls):
-        pass
+
+
 
 
 class Student:
-    def __init__(self, name, surname, student_id):
+    student_id_counter = 0
+
+    def __init__(self, name, surname, student_id=False):
         self.name = name
         self.surname = surname
-        self.student_id = student_id
+        if not student_id:
+            self.student_id = Student.increase_student_id()
+        else:
+            self.student_id = student_id  # Check if the student id is on the use.
         self.lessons_registered = []
         self.number_of_lessons_registered = 0
 
-    def describe(self,with_lessons=False):
+    @classmethod
+    def increase_student_id(cls):
+        cls.student_id_counter = cls.student_id_counter + 1
+        return cls.student_id_counter
+
+    def describe(self, with_lessons=False):
         self.number_of_lessons_registered = len(self.lessons_registered)
-        print(f"{self.name} {self.surname} - Student ID: {self.student_id} Reg Lessons: {self.number_of_lessons_registered}")
-        if with_lessons == True:
+        print(
+            f"{self.name} {self.surname} - Student ID: {self.student_id} Reg Lessons: {self.number_of_lessons_registered}")
+        if with_lessons:
             for i in range(self.number_of_lessons_registered):
-                print(f"Lesson ID: {self.lessons_registered[i][0]} Point: {self.lessons_registered[i][1]}")
+                print(f"Lesson ID: {self.lessons_registered[i][0]} Point: {self.lessons_registered[i][1]} Grade: {self.lessons_registered[i][2]}")
 
     def register_lesson_to_student(self, course_id):
-        self.lessons_registered.append([course_id, None])
+        self.lessons_registered.append([course_id, None, None])
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    s1 = Student("Yusuf", "Savas", 1)
-    s2 = Student("Mehmet", "Yılmaz", 2)
-    s3 = Student("Ayşe", "Demir", 3)
-    s4 = Student("John", "Rave", 4)
+    s1 = Student("Yusuf", "Savas")
+    s2 = Student("Mehmet", "Yılmaz")
+    s3 = Student("Ayşe", "Demir")
+    s4 = Student("John", "Rave",101)
 
     course1 = Lesson("Math", 1, 30)
     course1.add_student_to_lesson(s1)
@@ -98,8 +164,8 @@ if __name__ == '__main__':
     course1.add_grade_to_student(s1, 10)
     course1.add_grade_to_student(s2, 10)
 
-    CalculationGrades.return_current_grades()
-    course1.calculate_grade()
+    course1.CalculationGrades.return_current_grades()
+    course1.calculate_grade("manual")
 
     course1.describe()
     course2.describe()
