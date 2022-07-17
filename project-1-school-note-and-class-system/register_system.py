@@ -4,18 +4,22 @@ from datetime import date
 
 
 class Lesson:
-    course_id = 101
+    course_id_counter = 101
 
-    def __init__(self, name, course_id, max_students):
+    def __init__(self, name, course_id=False, max_students=10):
         self.name = name
         self.course_id = course_id
+        if not course_id:
+            self.course_id = Lesson.increase_course_id()
+        else:
+            self.course_id = course_id  # Check if the student id is on the use.
         self.max_students = max_students
         self.students = []  # Empty lists for the students.
-        Lesson.increase_course_id()
 
     @classmethod
     def increase_course_id(cls):
-        cls.course_id = cls.course_id + 1
+        cls.course_id_counter = cls.course_id_counter + 1
+        return cls.course_id_counter
 
     def add_student_to_lesson(self, student):
         if len(self.students) < self.max_students:
@@ -120,7 +124,7 @@ class Lesson:
             index = 0
             for course_info in student.lessons_registered:
                 if course_info[0] == self.course_id:
-                    if student.lessons_registered[index][2] == "FF":
+                    if student.lessons_registered[index][2] != "FF" or student.lessons_registered[index][2] != "GZ":
                         is_passed = "Passed"
                     else:
                         is_passed = "Failed"
@@ -180,29 +184,6 @@ class Student:
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    s1 = Student("Yusuf", "Savas")
-    s2 = Student("Mehmet", "Yılmaz")
-    s3 = Student("Ayşe", "Demir")
-    s4 = Student("John", "Rave", 101)
-
-    course1 = Lesson("Math", 1, 30)
-    course1.add_student_to_lesson(s1)
-    course1.add_student_to_lesson(s2)
-    course1.add_student_to_lesson(s3)
-
-    course2 = Lesson("Art", 2, 5)
-    course2.add_student_to_lesson(s3)
-    course2.add_student_to_lesson(s4)
-
-    course1.add_grade_to_student(s1, 10)
-    course1.add_grade_to_student(s2, 10)
-
-    course1.CalculationGrades.return_current_grades()
-    course1.calculate_grade("manual")
-
-    course1.describe()
-    # course2.describe()
-
-    course1.export_excel_file()
+    pass
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
