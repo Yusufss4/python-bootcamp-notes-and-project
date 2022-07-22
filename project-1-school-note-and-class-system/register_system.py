@@ -182,6 +182,51 @@ class Student:
         self.lessons_registered.append([course_id, None, None])
 
 
+
+class StudentList:
+    def __init__(self, listName):
+        self.listName = listName
+        self.studentList = []
+
+    def add_student_to_list(self, student):
+        self.studentList.append(student)
+
+    def search_student_by_id(self,id):
+        for student in self.studentList:
+            if student.student_id == id:
+                print("Student is found.")
+                return student
+        print("Student cant found.")
+        return -1
+
+
+
+    def search_student_by_name(self,name,surname):
+        for student in self.studentList:
+            if student.name.lower() == name.lower() and student.surname.lower() == surname.lower():
+                print("Student is found.")
+                return student
+        print("Student cant found.")
+        return -1
+
+class CourseList:
+
+    def __init__(self, listName):
+        self.listName = listName
+        self.courseList = []
+
+    def add_course_to_list(self, course):
+        self.courseList.append(course)
+
+    def search_course_by_name(self,name):
+        for course in self.courseList:
+            if course.name.lower() == name.lower():
+                print("Course is found.")
+                return course
+        print("Course cant found.")
+        return -1
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     pass
