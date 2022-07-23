@@ -40,10 +40,24 @@ def add_student_to_course_menu(course_list, student_list):
 
 
 def add_grades_to_students_menu():
-    print("Enter the name of the course: ")
-    print("Enter the student ID: ")
-    print("Enter the grade: ")
-    pass
+
+    course_name = input("Enter the name of the course: ")
+    course_found = course_list.search_course_by_name(course_name)
+
+    while True:
+        student_name = input("Enter the name of the student: ")
+        student_surname = input("Enter the surname of the student: ")
+        student = student_list.search_student_by_name(student_name, student_surname)
+
+        student_grade = input("Enter the grade of the student: ")
+        course_name.add_grade_to_student(student,student_grade)
+        option_for_more_students = input("Dou want to continue: Y/N ")
+
+        if option_for_more_students == "N":
+            break
+            return
+        else:
+            continue
 
 
 def calculate_grades_for_course():
@@ -61,11 +75,11 @@ if __name__ == '__main__':
         input_menu = input('Menu Option:')
         if input_menu == "1":
             add_course_menu(course_list)
-        if input_menu == "2":
+        elif input_menu == "2":
             add_student_to_course_menu(course_list, student_list)
-        if input_menu == "3":
+        elif input_menu == "3":
             add_grades_to_students_menu()
-        if input_menu == "4":
+        elif input_menu == "4":
             calculate_grades_for_course()
 
 """
