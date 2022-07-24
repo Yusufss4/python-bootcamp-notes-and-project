@@ -36,7 +36,7 @@ class Lesson:
                 if course_info[0] == self.course_id:
                     student.lessons_registered[index][1] = point
                     course_found = 1
-            index += 1
+                index += 1
             if course_found == 0:
                 print(f"The lesson is not assigned to the student with ID of {student.student_id}")
         else:
@@ -112,7 +112,7 @@ class Lesson:
                             grade = None
 
                         student.lessons_registered[index][2] = grade
-                        index += 1
+                    index += 1
 
                 if course_found == 0:
                     print(f"The lesson is not assigned to the student with ID of {student.student_id}")
@@ -124,7 +124,7 @@ class Lesson:
             index = 0
             for course_info in student.lessons_registered:
                 if course_info[0] == self.course_id:
-                    if student.lessons_registered[index][2] != "FF" or student.lessons_registered[index][2] != "GZ":
+                    if student.lessons_registered[index][2] != "FF" and student.lessons_registered[index][2] != "GZ":
                         is_passed = "Passed"
                     else:
                         is_passed = "Failed"
@@ -140,6 +140,7 @@ class Lesson:
                     data = pd.concat([data, data_students])
                 index += 1
         data.reset_index(inplace=True, drop=True)
+        print("\nCourse Name - " + self.name)
         print(data)
 
         todays_date = date.today().strftime("%d-%m-%Y")
@@ -148,7 +149,7 @@ class Lesson:
         try:
             data.to_excel(excel_file_name)
         except:
-            print("Could not import to the excel file.")
+            print("Could not import to the excel file, maybe openpyxl is missing?")
 
 
 class Student:
